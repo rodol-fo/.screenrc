@@ -1,0 +1,54 @@
+startup_message off
+
+hardstatus alwayslastline
+hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%d-%m-%Y %{W}%C:%s%A%{g}]'
+
+
+# 256 colors
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce on
+
+# layouts
+screen -t Shell1    1 bash
+screen -t Shell2    2 bash
+screen -t psql      3 psql -U postgres
+
+chdir $HOME/opt/apache-tomcat-7.0.55
+screen -t tomcat    4 bash 
+
+chdir $HOME/opt/hornetq-2.2.5.Final
+screen -t hornetq   5 bash
+
+chdir $HOME/opt/memcached-1.4.20
+screen -t memcached 6 bash
+
+chdir $HOME/opt/mongodb-linux-x86_64-2.4.11/bin
+screen -t mongod    7 bash
+
+select 0
+bind c screen 1 # window numbering starts at 1 not 0
+bind 0 select 10
+
+select 1
+split
+resize -v +6
+clear
+focus down
+select 2
+focus up
+
+# navigating regions with Ctrl-arrows
+bindkey "^[[1;5D" prev
+bindkey "^[[1;5C" next
+bindkey "^[[1;5A" focus up
+bindkey "^[[1;5B" focus down
+
+# F2 puts Screen into resize mode. Resize regions using hjkl keys.
+bindkey "^[OQ" eval "command -c rsz" # enter resize mode
+  
+# use hjkl keys to resize regions
+bind -c rsz h eval "resize -h -5" "command -c rsz"
+bind -c rsz j eval "resize -v -5" "command -c rsz"
+bind -c rsz k eval "resize -v +5" "command -c rsz"
+bind -c rsz l eval "resize -h +5" "command -c rsz"
